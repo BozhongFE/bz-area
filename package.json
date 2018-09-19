@@ -1,0 +1,30 @@
+{
+  "name": "bz-area",
+  "version": "0.0.1",
+  "description": "省市区组件",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BozhongFE/bz-area.git"
+  },
+  "keywords": [
+    "area"
+  ],
+  "author": "unclay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BozhongFE/bz-area/issues"
+  },
+  "homepage": "https://github.com/BozhongFE/bz-area#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.6.1",
+    "rollup": "^0.66.0",
+    "rollup-plugin-buble": "^0.19.2",
+    "rollup-plugin-uglify": "^6.0.0",
+    "zlib": "^1.0.5"
+  }
+}

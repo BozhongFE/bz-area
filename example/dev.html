@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ch-ZN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <style>
+.bz-area {
+  color: #333;
+}
+.bz-area a {
+  text-decoration: none;
+  color: #333;
+}
+.bz-area--mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+} 
+.bz-area__container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background: #fff;
+}
+.bz-area__hd {
+  position: relative;
+  height: 40px;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.bz-area--close {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translate(0, -50%);
+}
+.bz-area__bar {
+  position: relative;
+  height: 30px;
+  list-style: none;
+}
+.bz-area__bar li {
+  margin-left: 16px;
+  padding: 0 5px;
+  float: left;
+  height: 28px;
+  line-height: 30px;
+  font-size: 14px;
+  border-bottom: 2px solid transparent;
+}
+.bz-area__bar li:first-child {
+  margin-left: 5px;
+}
+.bz-area__bar li.active {
+  display: block;
+  color: rgb(250, 121, 30);
+  border-bottom: 2px solid rgb(250, 121, 30);
+}
+.bz-area__bar:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 1px;
+  border-bottom: 1px solid #E5E5E5;
+  color: #E5E5E5;
+  transform-origin: 0 100%;
+  transform: scaleY(0.5);
+}
+
+  </style>
+  <script src="../cache/bz-area-dev.js"></script>
+  <div class="bz-area">
+    <a class="bz-area--mask" href="javascript:;"></a>
+    <div class="bz-area__container">
+      <div class="bz-area__hd">
+          <a class="bz-area--close" href="javascript:;">x</a>
+      </div>
+      <div class="bz-area__bd">
+        <ul class="bz-area__bar">
+          <li class="active">广东</li>
+          <li>深圳市</li>
+          <li>南山区</li>
+        </ul>
+        <div class="bz-area__list">
+          <ul class="bz-area__item">
+            <li>广州市</li>
+            <li>深圳市</li>
+            <li>广州市</li>
+            <li>深圳市</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
