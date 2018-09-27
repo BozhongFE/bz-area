@@ -1,0 +1,10 @@
+{
+  "extends": "airbnb-base",
+  "rules": {
+  },
+  "globals": {
+    "document": true,
+    "window": true,
+    "alert": true
+  }
+}
