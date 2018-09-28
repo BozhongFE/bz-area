@@ -20,6 +20,7 @@
 .bz-area .bzicon-check {
   position: relative;
   transform: rotate(-45deg);
+  display: none;
 }
 .bz-area .bzicon-check:before {
   position: absolute;
@@ -179,5 +180,6 @@
   color: rgb(250, 121, 30);
 }
 .bz-area__list__item.active i {
+  display: inline-block;
   margin-left: 0.4em;
 }

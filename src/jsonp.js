@@ -44,6 +44,12 @@ export default (xurl = '', xdata = {}, xmethod = '__c', xcallback = () => {}) =>
   };
 
   jsonpScript.setAttribute('src', `${url + method}=${generatedFunction}`);
+  jsonpScript.onerror = () => {
+    /* eslint-disable no-alert */
+    alert('网络异常');
+    /* eslint-enable no-alert */
+    delete window[generatedFunction];
+  };
   document.getElementsByTagName('head')[0].appendChild(jsonpScript);
 
   window.setTimeout(() => {
@@ -62,7 +68,7 @@ export default (xurl = '', xdata = {}, xmethod = '__c', xcallback = () => {}) =>
 
       // call the error callback
       /* eslint-disable no-alert */
-      alert('请求超时');
+      // alert('请求超时');
       /* eslint-enable no-alert */
 
       // set a longer timeout to safely clean up the unused callback.

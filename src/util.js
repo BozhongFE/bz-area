@@ -27,7 +27,7 @@ export const isEmpty = (val) => {
 };
 
 // 普通数组转为自定义异步队列
-export const queue = (arr, callback) => {
+export const asyncArray = (arr, callback) => {
   if (!isEmpty(arr)) {
     let index = -1;
     const next = () => {

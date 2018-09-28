@@ -5,10 +5,9 @@ import htmlHandler from './html';
 import jsonp from './jsonp';
 import Event from './event';
 import {
-  isNumber,
   isFunction,
   isEmpty,
-  queue,
+  asyncArray,
   getTarget,
   getLink,
 } from './util';
@@ -28,12 +27,10 @@ class BzArea {
     this.event = new Event();
     // 接口数据缓存，减少接口请求
     this.apidata = {};
-    this.value = {
+    this.data = {
       // 省市区导航栏当前选中状态，默认展示第一列（即省列数据）
-      navSelected: 0,
-      // 列数据选中的索引（索引二维数组）
-      listSelected: [],
-      // 列数据（二维数组）
+      tab: 0,
+      // 列数据
       list: [],
     };
     BzArea.init(this);
@@ -75,7 +72,7 @@ class BzArea {
       if (target) {
         const index = Number(target.dataset.index);
         if (!isEmpty(target.dataset.index)) {
-          self.value.navSelected = index;
+          self.data.tab = index;
           this.render(self);
         }
       }
@@ -84,24 +81,27 @@ class BzArea {
     // 列表选择省市区
     self.$list.addEventListener('click', (e) => {
       const target = getTarget(e.target, 'bz-area__list', 'bz-area__list__item');
-      if (target) {
+      const parent = getTarget(e.target, 'bz-area__bd', 'bz-area__list');
+      if (target && parent) {
         const index = Number(target.dataset.index);
-        const { navSelected, listSelected, list } = self.value;
+        const listIndex = Number(parent.dataset.index);
+        const { list } = self.data;
 
         // 同一个地区不作处理
-        if (!isEmpty(index) && listSelected[navSelected] !== index) {
+        if (!isEmpty(index) && !isEmpty(listIndex) && list[listIndex].select !== index) {
+          self.data.tab = listIndex;
           // 设置选中当前地区
-          listSelected[navSelected] = index;
+          list[listIndex].select = index;
           // 清空选中的下级联动地区、及地区数据
-          listSelected.splice(navSelected + 1);
-          list.splice(navSelected + 1);
+          list.splice(listIndex + 1);
+          this.render(self);
           // 限制联动级别数，默认省市区三级，可加第四级街道
-          if (navSelected < self.opts.level - 1) {
-            self.value.navSelected += 1;
-            const nowNav = self.value.navSelected;
-            BzArea.request(list[navSelected][index].id, () => {
+          if (listIndex < self.opts.level - 1) {
+            self.data.tab = listIndex + 1;
+            const nowNav = listIndex + 1;
+            BzArea.request(list[listIndex].list[index].id, () => {
               // 部分地区没有下一级数据，需提前回调出去（天津市河东区xx街道，没有第四级数据）
-              if (self.value.navSelected < nowNav) {
+              if (self.data.tab < nowNav) {
                 BzArea.successCallback(self);
               }
             }, self);
@@ -117,21 +117,23 @@ class BzArea {
 
   static successCallback(self) {
     setTimeout(() => {
-      self.event.emit('success', self.opts.format(self.value.listSelected.map((columnIndex, index) => self.value.list[index][columnIndex])));
+      self.event.emit('success', self.opts.format(self.data.list.map(item => item.list[item.select])));
       self.hide();
     }, 100);
   }
 
   static request(id = 0, callback, instance) {
     const self = instance;
-    const { navSelected, listSelected, list } = self.value;
+    const { tab, list } = self.data;
     // 数据载入，并清除过往数据
     const dataHandler = (data) => {
-      list[navSelected] = self.apidata[id];
+      list[tab] = {
+        id,
+        list: self.apidata[id],
+      };
       if (data.length === 0) {
-        self.value.navSelected -= 1;
-        listSelected.splice(navSelected);
-        list.splice(navSelected);
+        self.data.tab -= 1;
+        list.splice(tab);
       }
     };
     if (isEmpty(self.apidata[id])) {
@@ -140,9 +142,13 @@ class BzArea {
       }, '__c', (data) => {
         if (data.error_code === 0) {
           self.apidata[id] = data.data;
-          dataHandler(self.apidata[id]);
-          this.render(self);
-          if (isFunction(callback)) callback();
+          const lastTab = self.data.tab - 1;
+          const lastList = self.data.list[lastTab];
+          if (!lastList || lastList.list[lastList.select].id === id) {
+            dataHandler(self.apidata[id]);
+            this.render(self);
+            if (isFunction(callback)) callback();
+          }
         }
       });
     } else {
@@ -159,18 +165,18 @@ class BzArea {
 
   static rendernav(instance) {
     const self = instance;
-    const navsData = self.value.list.map((item, index) => {
-      if (isEmpty(self.value.listSelected[index])) {
+    const navsData = self.data.list.map((item) => {
+      if (isEmpty(item.select)) {
         return {
           name: '请选择',
         };
       }
       return {
-        name: item[self.value.listSelected[index]].name,
+        name: item.list[item.select].name,
       };
     });
     const nav = htmlHandler.nav({
-      navSelected: self.value.navSelected,
+      tab: self.data.tab,
       navs: navsData,
     });
     self.$nav.innerHTML = nav;
@@ -178,12 +184,30 @@ class BzArea {
 
   static renderList(instance) {
     const self = instance;
-    const list = htmlHandler.list({
-      navSelected: self.value.navSelected,
-      listSelected: self.value.listSelected,
-      list: self.value.list,
+    const $lists = self.$el.querySelectorAll('.bz-area__list');
+    self.data.list.forEach((item, index) => {
+      const dom = $lists[index];
+      if (dom) {
+        dom.style.display = (self.data.tab === index ? 'block' : 'none');
+        const id = Number(dom.dataset.id);
+        if (isEmpty(id) || id !== item.id) {
+          dom.dataset.id = item.id;
+          const html = htmlHandler.listItem({
+            list: item.list,
+          });
+          dom.innerHTML = html;
+        }
+        const domItems = dom.querySelectorAll('.bz-area__list__item');
+        domItems.forEach((domItem) => {
+          if (domItem.classList.contains('active')) {
+            domItem.classList.remove('active');
+          }
+        });
+        if (!isEmpty(item.select) && domItems[item.select]) {
+          domItems[item.select].classList.add('active');
+        }
+      }
     });
-    self.$list.innerHTML = list;
   }
 
   show() {
@@ -201,48 +225,46 @@ class BzArea {
   }
 
   set(area) {
-    if (area && area.length > 0) {
-      // 异步数组
-      queue(area, (name, index, next) => {
-        let id = 0;
-        // 还原数据
-        if (index === 0) {
-          this.value.navSelected = 0;
-          this.value.listSelected = [];
-          this.value.list = [];
-        }
-        // 获取当前省市区的id
-        if (index - 1 >= 0
-          && !isEmpty(this.value.list[index - 1])
-          && isNumber(this.value.listSelected[index - 1])
-          && this.value.list[index - 1][this.value.listSelected[index - 1]]) {
-          const { id: selectId } = this.value.list[index - 1][this.value.listSelected[index - 1]];
-          id = selectId;
-        }
-        // 通过id加载对应数据
-        BzArea.request(id, () => {
-          if (this.value.list[index]) {
-            if (name) {
-              const listIndex = this.value.list[index].findIndex(item => item.name === name);
-              if (listIndex !== -1) {
-                this.value.listSelected[index] = listIndex;
-                if (this.value.navSelected < this.opts.level - 1) {
-                  this.value.navSelected += 1;
-                  BzArea.render(this);
-                  next();
-                } else {
-                  BzArea.render(this);
-                }
+    // 异步数组
+    asyncArray(area, (name, index, next) => {
+      let id = 0;
+      const lastIndex = index - 1;
+      // 还原数据
+      if (index === 0) {
+        this.data.tab = 0;
+        this.data.list = [];
+      }
+      // 获取当前省市区的id
+      if (lastIndex >= 0
+        && this.data.list[lastIndex]
+        && !isEmpty(this.data.list[lastIndex].select)
+        && this.data.list[lastIndex].list[this.data.list[lastIndex].select]) {
+        const { id: selectId } = this.data.list[lastIndex].list[this.data.list[lastIndex].select];
+        id = selectId;
+      }
+      // 通过id加载对应数据
+      BzArea.request(id, () => {
+        if (this.data.list[index]) {
+          if (name) {
+            const listIndex = this.data.list[index].list.findIndex(item => item.name === name);
+            if (listIndex !== -1) {
+              this.data.list[index].select = listIndex;
+              if (this.data.tab < this.opts.level - 1) {
+                this.data.tab += 1;
+                BzArea.render(this);
+                next();
+              } else {
+                BzArea.render(this);
               }
             }
-          } else {
-            /* eslint-disable no-console */
-            console.warn(`id:${id} 对应的数据不存在`);
-            /* eslint-enable no-console */
           }
-        }, this);
-      });
-    }
+        } else {
+          /* eslint-disable no-console */
+          console.warn(`id:${id} 对应的数据不存在`);
+          /* eslint-enable no-console */
+        }
+      }, this);
+    });
   }
 
   destroy() {

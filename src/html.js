@@ -2,18 +2,17 @@ export default {
   nav(opts) {
     let html = '';
     opts.navs.forEach((item, index) => {
-      html += `<a data-index="${index}" href="javascript:;" class="bz-area__nav__item ${opts.navSelected === index ? 'active' : ''}"><span>${item.name}</span></a>`;
+      html += `<a data-index="${index}" href="javascript:;" class="bz-area__nav__item ${opts.tab === index ? 'active' : ''}"><span>${item.name}</span></a>`;
     });
     return html;
   },
-  list(opts) {
+  listItem({ list }) {
+    if (list.length === 0) {
+      return '';
+    }
     let html = '';
-    opts.list.forEach((list, navSelected) => {
-      html += `<div class="bz-area__list" style="display: ${navSelected === opts.navSelected ? 'block' : 'none'};">`;
-      list.forEach((item, index) => {
-        html += `<a data-index="${index}" data-id="${item.id}" class="bz-area__list__item ${opts.listSelected[navSelected] === index ? 'active' : ''}"><span>${item.name}</span>${opts.listSelected[navSelected] === index ? '<i class="bzicon bzicon-check"></i>' : ''}</a>`;
-      });
-      html += '</div>';
+    list.forEach((item, index) => {
+      html += `<a data-index="${index}" data-id="${item.id}" class="bz-area__list__item"><span>${item.name}</span><i class="bzicon bzicon-check"></i></a>`;
     });
     return html;
   },
@@ -31,7 +30,10 @@ export default {
       </div>
     </div>
     <div class="bz-area__bd">
-      ${scope.list || ''}
+      <div data-index="0" class="bz-area__list"></div>
+      <div data-index="1" class="bz-area__list"></div>
+      <div data-index="2" class="bz-area__list"></div>
+      <div data-index="3" class="bz-area__list"></div>
     </div>
   </div>
 </div>`;
