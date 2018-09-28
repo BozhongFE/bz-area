@@ -30,6 +30,7 @@
   </script>
   <style>
     .bz-area {
+      font-size: 1rem!important;
     }
   </style>
   <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
@@ -45,11 +46,9 @@
     window.bzArea = new BzArea({
       title: '所在地区',
       level: 4,
-      format(data) {
-        return data.map((item) => {
-          return item.name
-        });
-      },
+      // format(data) {
+      //   return data;
+      // },
     });
     bzArea.set(['河北省', '邯郸市', '复兴区', '彭家寨乡']);
     bzArea.on('success', (data) => {

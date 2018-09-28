@@ -19,9 +19,7 @@ class BzArea {
       // 详细级别、默认省市区3级
       level: 3,
       timestamp: new Date().getTime(),
-      format(data) {
-        return data;
-      },
+      format: data => data.map(item => item.name),
     }, opts);
     // 自定义事件、及触发
     this.event = new Event();

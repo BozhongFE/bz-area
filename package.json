@@ -1,14 +1,13 @@
 {
   "name": "bz-area",
   "version": "0.0.1",
-  "description": "省市区组件",
+  "description": "省市区插件",
   "main": "dist/bz-area.umd.js",
   "module": "dist/bz-area.esm.js",
   "scripts": {
     "dev": "gulp dev",
-    "build": "node build/prod.js",
-    "build:dev": "node build/dev.js",
-    "build:dist": "node build/dist.js",
+    "build": "node build/dist.js",
+    "build:moe": "node build/prod.js",
     "eslint": "eslint ./src/*.js"
   },
   "repository": {
@@ -16,6 +15,7 @@
     "url": "git+https://github.com/BozhongFE/bz-area.git"
   },
   "keywords": [
+    "省市区",
     "area"
   ],
   "author": "unclay <wcl58981298@gmail.com>",
