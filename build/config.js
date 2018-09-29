@@ -53,7 +53,6 @@ let builds = {
       resolve(),
       commonjs()
     ],
-    hasExternal: true,
     sourceMap: true,
   },
   'dist-common': {
@@ -109,7 +108,7 @@ function getConfig(opts, name) {
     plugins: [
       postcss({
         plugins: [
-          autoprefixer({ browsers: ['iOS >= 8', 'Android >= 4.4', 'not ie <= 8'] }),
+          autoprefixer({ browsers: ['iOS >= 8', 'Android >= 4.2', 'not ie <= 8'] }),
           cssnano(),
         ],
       }),
@@ -117,11 +116,12 @@ function getConfig(opts, name) {
     ].concat(opts.plugins || []),
   };
   if (opts.sourceMap) {
-    theConfig.sourceMap = opts.sourceMap;
+    theConfig.output.sourceMap = opts.sourceMap;
   }
   if (opts.hasExternal) {
     theConfig.external = [
       'object-assign',
+      'array.findindex',
     ];
     theConfig.output.globals = {
       'object-assign': 'ObjectAssign',
@@ -132,43 +132,3 @@ function getConfig(opts, name) {
 }
 
 exports.getAllBuilds = () => Object.keys(builds).map(name => getConfig(builds[name], name));
-
-// exports.getProdBuilds = () => Object.keys(builds).filter(name => {
-//   if (name.match(/prod/)) {
-//     return name;
-//   }
-// }).map(name => getConfig(builds[name]));
-
-// exports.getDevBuilds = () => Object.keys(builds).filter(name => {
-//   if (name === 'dev') {
-//     return name;
-//   }
-// }).map(name => getConfig(builds[name]));
-
-// exports.getMoeBuilds = () => {
-//   let moePath = process.env.npm_config_bz_mod;
-//   if (typeof moePath === void 0) {
-//     console.log('请先配置模块所在目录');
-//     console.log('Example: npm config set bz-mod "D:\\source"');
-//     throw new Error('没有配置模块路径');
-//   } else if (!exists(moePath)) {
-//     throw new Error('模块目录不存在，请检查配置的模块目录是否正确');
-//   } else {
-//     moePath = path.join(moePath, name);
-//     if (!exists(moePath)) {
-//       fs.mkdirSync(moePath);
-//     }
-
-//     moePath = path.join(moePath, version);
-//     if (!exists(moePath)) {
-//       fs.mkdirSync(moePath);
-//     }
-//   }
-
-//   const builds = getBuilds(moePath);
-//   return Object.keys(builds).filter(name => {
-//     if (name.match(/prod/)) {
-//       return name;
-//     }
-//   }).map(name => getConfig(builds[name]))
-// };

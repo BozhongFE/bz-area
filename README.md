@@ -1,12 +1,11 @@
-# ![bz-area](screenshot.png)
-
-播种网移动端省市区插件，UI基于em设计
+播种网移动端省市区模块，UI基于em设计
 
 ## 命令
 
 ```shell
 npm run dev
 npm run build
+npm run build:dist
 npm run build:moe
 npm run eslint
 ```
@@ -51,21 +50,21 @@ bzArea.on('success', (data) => {
 
 参数名 | 类型 | 描述
 ---- | ---- | ----
-title | String | 插件顶部标题
+title | String | 模块顶部标题
 level | Number | 地区级别，共4级（省、市、区、街道），默认：3
 format | Function | 选完回调success前对数据进行格式化处理，并返回
 
 ## 实例方法
 
 ### show
-显示插件
+显示模块
 
 ```js
 bzArea.show();
 ```
 
 ### hide
-关闭插件
+关闭模块
 
 ```js
 bzArea.hide();
@@ -80,7 +79,7 @@ bzArea.on(type, callback);
 
 参数 | 描述
 ---- | ----
-type | 事件类型：success成功回调(可在options.format预先格式化数据))、hide关闭插件回调
+type | 事件类型：success成功回调(可在options.format预先格式化数据))、hide关闭模块回调
 callback | 对应的回调事件
 
 ### set
@@ -100,3 +99,9 @@ area | 设置的地区值(Array)，例如：['广东省', '广州市']
 ```js
 bzArea.destroy();
 ```
+
+## 展示图
+
+<p>
+  <img src="screenshot.png" width="400">
+</p>

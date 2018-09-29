@@ -1,5 +1,5 @@
-// import ObjectAssign from 'object-assign';
-// Object.assign = ObjectAssign;
+import ObjectAssign from 'object-assign';
+import 'array.findindex';
 import './style.css';
 import htmlHandler from './html';
 import jsonp from './jsonp';
@@ -11,6 +11,8 @@ import {
   getTarget,
   getLink,
 } from './util';
+
+Object.assign = ObjectAssign;
 
 class BzArea {
   constructor(opts) {
@@ -196,11 +198,12 @@ class BzArea {
           dom.innerHTML = html;
         }
         const domItems = dom.querySelectorAll('.bz-area__list__item');
-        domItems.forEach((domItem) => {
+        for (let i = 0; i < domItems.length; i += 1) {
+          const domItem = domItems[i];
           if (domItem.classList.contains('active')) {
             domItem.classList.remove('active');
           }
-        });
+        }
         if (!isEmpty(item.select) && domItems[item.select]) {
           domItems[item.select].classList.add('active');
         }

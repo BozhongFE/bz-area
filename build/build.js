@@ -1,11 +1,6 @@
-const fs = require('fs');
 const path = require('path');
-const gulp = require('gulp');
-const connect = require('gulp-connect');
 const rollup = require('rollup');
 const zlib = require('zlib');
-const configObj = require('./config');
-const builds = configObj.getAllBuilds();
 
 function build(builds, isWatch) {
   builds.forEach(async (conf) => {
@@ -52,12 +47,6 @@ function gzip (code) {
     });
   });
 }
-
-// 输出文件大小
-function report () {
-
-}
-
 
 // 获取生成的文件大小
 function getSize (code) {

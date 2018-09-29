@@ -1,12 +1,13 @@
 {
   "name": "bz-area",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "省市区插件",
   "main": "dist/bz-area.umd.js",
   "module": "dist/bz-area.esm.js",
   "scripts": {
     "dev": "gulp dev",
-    "build": "node build/dist.js",
+    "build": "npm run build:dist && npm run build:moe",
+    "build:dist": "node build/dist.js",
     "build:moe": "node build/prod.js",
     "eslint": "eslint ./src/*.js"
   },
@@ -41,6 +42,7 @@
     "zlib": "^1.0.5"
   },
   "dependencies": {
+    "array.findindex": "^1.0.2",
     "object-assign": "^4.1.1"
   }
 }

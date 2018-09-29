@@ -9,7 +9,7 @@
   </style>
   <script>
     (function(scope) {
-      const pageWidth = 375;
+      const pageWidth = 750;
       // 下面750对应设计稿的宽度
       // document.body.innerHTML = window.innerWidth;
       const ua = navigator.userAgent.toLocaleLowerCase();
@@ -30,11 +30,15 @@
   </script>
   <style>
     .bz-area {
-      font-size: 1rem!important;
+      font-size: 1.1rem!important;
     }
   </style>
   <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
   <script src="https://cdn.bootcss.com/require.js/2.3.5/require.min.js"></script>
+  <script>
+    var vConsole = new VConsole();
+  </script>
 </head>
 <body>
   <div id="app">
@@ -51,10 +55,10 @@
       // },
     });
     bzArea.set(['河北省', '邯郸市', '复兴区', '彭家寨乡']);
-    bzArea.on('success', (data) => {
+    bzArea.on('success', function (data) {
       console.log(data);
       $('#text').html(data);
-    }).on('hide', function() {
+    }).on('hide', function () {
       console.log('has hide');
     });
     bzArea.show();
@@ -64,6 +68,7 @@
     console.log(bzArea);
   });
   </script>
+
 
 </body>
 </html>

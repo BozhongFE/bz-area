@@ -79,7 +79,7 @@
   position: relative;
   height: 2.25em;
   line-height: 2.25em;
-  border-bottom: 0.05em solid #E5E5E5;
+  border-bottom: 1px solid #E5E5E5;
   box-sizing: border-box;
 }
 .bz-area__tips h4 {
@@ -122,7 +122,7 @@
   float: left;
   max-width: 25%;
   height: 1.9em;
-  line-height: 1.9em;
+  line-height: 2em;
 }
 .bz-area__nav.nav-level-4 .bz-area__nav__item {
   max-width: 22%;
@@ -147,8 +147,8 @@
   left: 0;
   bottom: 0;
   right: 0;
-  height: 0.05em;
-  border-bottom: 0.05em solid #E5E5E5;
+  height: 1px;
+  border-bottom: 1px solid #E5E5E5;
   color: #E5E5E5;
   transform-origin: 0 100%;
   transform: scaleY(0.5);
@@ -182,5 +182,5 @@
 }
 .bz-area__list__item.active i {
   display: inline-block;
-  margin-left: 0.4em;
+  margin-left: 0.5em;
 }
